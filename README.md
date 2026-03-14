@@ -141,3 +141,17 @@ procesa → 101..150
 
 ** Evitando que se tenga que ir incrementando de 1 a 50, de 1 a 100, de 1 a 150, de 1 a 200, de 1 a 250,,....de 1 a 39950...
 
+
+
+#### En Export.php teniamos esto: 'posts_per_page' => -1. Esto intentaba cargar los 40k post en memoria al mismo tiempo.
+
+
+- RAM consumo alto. Timeout PHP. Export que nunca terminaria 
+Ahora:  
+
+- carga solo 200
+- procesa
+- carga otros 200 
+- procesa
+
+Evitando rompet PHP

@@ -2,14 +2,7 @@
 
 function ida_export_csv(){
 
-$args = [
-'post_type'=>'post',
-'posts_per_page'=>-1,
-'post_status'=>'publish',
-'fields'=>'ids'
-];
-
-$query = new WP_Query($args);
+global $wpdb;
 
 header('Content-Type: text/csv');
 header('Content-Disposition: attachment;filename=image-density-report.csv');
@@ -28,7 +21,29 @@ fputcsv($output,[
 'Performance Risk'
 ]);
 
-foreach($query->posts as $post_id){
+$batch = 200;
+$last_id = 0;
+
+while(true){
+
+$sql = $wpdb->prepare(
+"SELECT ID FROM {$wpdb->posts}
+WHERE post_type='post'
+AND post_status='publish'
+AND ID > %d
+ORDER BY ID ASC
+LIMIT %d",
+$last_id,
+$batch
+);
+
+$post_ids = $wpdb->get_col($sql);
+
+if(empty($post_ids)){
+break;
+}
+
+foreach($post_ids as $post_id){
 
 $post = get_post($post_id);
 
@@ -66,6 +81,10 @@ $weight,
 $density,
 $risk
 ]);
+
+$last_id = $post_id;
+
+}
 
 }
 
