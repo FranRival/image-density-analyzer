@@ -1,3 +1,41 @@
+1. Escanea todos los posts de WordPress
+Recorre cada post publicado para analizar su contenido.
+
+2. Cuenta cuántas imágenes tiene cada post
+Detecta todas las etiquetas <img> dentro del contenido.
+
+3. Calcula la densidad de imágenes  
+
+Compara:
+- cantidad de imágenes
+- cantidad de palabras del post
+
+Con eso obtiene imágenes por cada X palabras.
+
+4. Identifica posts con posible sobrecarga de imágenes
+Marca los posts donde la relación imagen/texto es demasiado alta (posts “pesados” visualmente).
+
+5. Muestra el resultado en una tabla en el panel de WordPress
+Cada fila incluye cosas como:
+
+- Post ID
+- Título del post
+- URL del post
+- Número de imágenes
+- Número de palabras
+- Ratio imagen/palabra
+
+6. Permite exportar los resultados a Excel/CSV
+Para analizar los posts fuera de WordPress.
+
+7. Es solo diagnóstico (no modifica nada)
+El plugin no cambia posts ni elimina imágenes.
+Solo sirve para detectar problemas estructurales en el contenido.
+
+------
+
+
+
 #### Función del plugin
 
 Analiza todos los posts y genera una tabla con:
@@ -146,7 +184,8 @@ procesa → 101..150
 #### En Export.php teniamos esto: 'posts_per_page' => -1. Esto intentaba cargar los 40k post en memoria al mismo tiempo.
 
 
-- RAM consumo alto. Timeout PHP. Export que nunca terminaria 
+- RAM consumo alto. Timeout PHP. Export que nunca terminaria.
+
 Ahora:  
 
 - carga solo 200
