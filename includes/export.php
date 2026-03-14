@@ -2,12 +2,12 @@
 
 function ida_export_csv(){
 
-$args = array(
+$args = [
 'post_type'=>'post',
 'posts_per_page'=>-1,
 'post_status'=>'publish',
 'fields'=>'ids'
-);
+];
 
 $query = new WP_Query($args);
 
@@ -23,7 +23,7 @@ fputcsv($output,[
 'Total Images',
 'ImgBox',
 'Other',
-'Estimated Weight MB',
+'Weight MB',
 'Density',
 'Performance Risk'
 ]);

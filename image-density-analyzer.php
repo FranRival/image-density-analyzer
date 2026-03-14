@@ -10,11 +10,11 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-require_once plugin_dir_path(__FILE__) . 'includes/scanner.php';
 require_once plugin_dir_path(__FILE__) . 'includes/density-classifier.php';
 require_once plugin_dir_path(__FILE__) . 'includes/weight-estimator.php';
 require_once plugin_dir_path(__FILE__) . 'includes/export.php';
 require_once plugin_dir_path(__FILE__) . 'includes/ajax-scanner.php';
+
 
 add_action('admin_menu','ida_add_menu');
 
@@ -30,8 +30,8 @@ function ida_add_menu(){
 
 }
 
-function ida_admin_page(){
 
+function ida_admin_page(){
 ?>
 
 <div class="wrap">
@@ -42,9 +42,9 @@ function ida_admin_page(){
 Start Scan
 </button>
 
-<div id="ida-progress"></div>
+<div id="ida-progress" style="margin-top:15px;"></div>
 
-<table class="widefat striped">
+<table class="widefat striped" style="margin-top:20px;">
 
 <thead>
 <tr>
@@ -66,20 +66,9 @@ Start Scan
 </div>
 
 <?php
-
 }
 
-if(isset($_POST['scan_posts'])){
-    ida_scan_posts();
-}
 
-if(isset($_POST['export_csv'])){
-    ida_export_csv();
-}
-
-?>
-
-</div>
 
 register_activation_hook(__FILE__, 'ida_create_cache_table');
 
@@ -94,9 +83,10 @@ $charset = $wpdb->get_charset_collate();
 $sql = "CREATE TABLE $table (
 
 id BIGINT AUTO_INCREMENT PRIMARY KEY,
-image_url TEXT,
+image_url VARCHAR(500) NOT NULL,
 size_bytes BIGINT,
-checked_at DATETIME
+checked_at DATETIME,
+UNIQUE KEY image_url (image_url)
 
 ) $charset;";
 
@@ -105,6 +95,8 @@ require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 dbDelta($sql);
 
 }
+
+
 
 add_action('admin_enqueue_scripts','ida_load_scripts');
 
@@ -125,9 +117,5 @@ true
 wp_localize_script('ida-scanner','ida_ajax',[
 'ajax_url'=>admin_url('admin-ajax.php')
 ]);
-
-}
-
-<?php
 
 }
