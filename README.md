@@ -126,3 +126,18 @@ Flujo completo del sistema
 4️⃣ Se actualiza la barra de progreso  
 5️⃣ Continúa hasta terminar  
 
+#### IMplementacion de Id y no offset
+
+request 1 → ID > 0  
+procesa → 1..50  
+last_id = 50  
+
+request 2 → ID > 50  
+procesa → 51..100  
+last_id = 100  
+
+request 3 → ID > 100  
+procesa → 101..150  
+
+** Evitando que se tenga que ir incrementando de 1 a 50, de 1 a 100, de 1 a 150, de 1 a 200, de 1 a 250,,....de 1 a 39950...
+
