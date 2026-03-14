@@ -20,3 +20,30 @@ Lo mas importante, cuales son los post que pesan muchisimo mas.
 - densidad promedio de tu sitio
 
 (((estoo subirlo a linkedin)))
+
+
+#### V2.
+
+- Image Weight calculator
+
+*Post A - 120 images - avg 180kb TOTAL WEIGHT: 21 MB  
+Esto destruye por completo el TTFB o el DOM load.
+
+Completada:
+
+- Post: 1
+- Images: 120
+- Estimated Weight: 21 MB
+- Density: CRITICAL
+- Risk: HIGH
+
+#### Clasificacion de densidad:
+NORMAL: 0-20
+MEDIUM: 21-40
+HIGH: 41-80
+CRITICAL: 80+
+
+#### Peso
+LOW: < 5MB
+MEDIUM 5-15MB
+HIGH: 15MB

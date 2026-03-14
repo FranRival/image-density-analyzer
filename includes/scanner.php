@@ -2,80 +2,74 @@
 
 function ida_scan_posts(){
 
-    $args = array(
-        'post_type' => 'post',
-        'posts_per_page' => -1,
-        'post_status' => 'publish'
-    );
+$args = array(
+'post_type'=>'post',
+'posts_per_page'=>-1,
+'post_status'=>'publish',
+'fields'=>'ids'
+);
 
-    $query = new WP_Query($args);
+$query = new WP_Query($args);
 
-    echo "<table class='widefat striped'>";
-    echo "<thead>
-    <tr>
-    <th>ID</th>
-    <th>Title</th>
-    <th>Date</th>
-    <th>Total Images</th>
-    <th>ImgBox</th>
-    <th>Other</th>
-    <th>Density</th>
-    </tr>
-    </thead>";
+echo "<table class='widefat striped'>";
 
-    foreach($query->posts as $post){
+echo "<thead>
+<tr>
+<th>ID</th>
+<th>Title</th>
+<th>Date</th>
+<th>Total Images</th>
+<th>ImgBox</th>
+<th>Other</th>
+<th>Est. Weight</th>
+<th>Density</th>
+<th>Performance Risk</th>
+</tr>
+</thead>";
 
-        $content = $post->post_content;
+foreach($query->posts as $post_id){
 
-        preg_match_all('/<img[^>]+src="([^"]+)"/i', $content, $matches);
+$post = get_post($post_id);
 
-        $total = count($matches[1]);
+$content = $post->post_content;
 
-        $imgbox = 0;
-        $other = 0;
+preg_match_all('/<img[^>]+src="([^"]+)"/i',$content,$matches);
 
-        foreach($matches[1] as $url){
+$total = count($matches[1]);
 
-            if(strpos($url, 'imgbox') !== false){
-                $imgbox++;
-            } else {
-                $other++;
-            }
+$imgbox = 0;
+$other = 0;
 
-        }
+foreach($matches[1] as $url){
 
-        $density = ida_density_level($total);
-
-        echo "<tr>
-        <td>{$post->ID}</td>
-        <td>{$post->post_title}</td>
-        <td>{$post->post_date}</td>
-        <td>{$total}</td>
-        <td>{$imgbox}</td>
-        <td>{$other}</td>
-        <td>{$density}</td>
-        </tr>";
-
-    }
-
-    echo "</table>";
+if(strpos($url,'imgbox') !== false){
+$imgbox++;
+}else{
+$other++;
+}
 
 }
 
-function ida_density_level($total){
+$density = ida_density_level($total);
 
-    if($total <= 20){
-        return 'NORMAL';
-    }
+$weight = ida_estimate_weight($total);
 
-    if($total <= 40){
-        return 'MEDIUM';
-    }
+$risk = ida_performance_risk($weight);
 
-    if($total <= 80){
-        return 'HIGH';
-    }
+echo "<tr>
+<td>{$post->ID}</td>
+<td>{$post->post_title}</td>
+<td>{$post->post_date}</td>
+<td>{$total}</td>
+<td>{$imgbox}</td>
+<td>{$other}</td>
+<td>{$weight} MB</td>
+<td>{$density}</td>
+<td>{$risk}</td>
+</tr>";
 
-    return 'CRITICAL';
+}
+
+echo "</table>";
 
 }

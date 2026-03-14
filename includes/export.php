@@ -2,63 +2,74 @@
 
 function ida_export_csv(){
 
-    $args = array(
-        'post_type' => 'post',
-        'posts_per_page' => -1,
-        'post_status' => 'publish'
-    );
+$args = array(
+'post_type'=>'post',
+'posts_per_page'=>-1,
+'post_status'=>'publish',
+'fields'=>'ids'
+);
 
-    $query = new WP_Query($args);
+$query = new WP_Query($args);
 
-    header('Content-Type: text/csv');
-    header('Content-Disposition: attachment;filename=image-density-report.csv');
+header('Content-Type: text/csv');
+header('Content-Disposition: attachment;filename=image-density-report.csv');
 
-    $output = fopen('php://output', 'w');
+$output = fopen('php://output','w');
 
-    fputcsv($output, array(
-        'Post ID',
-        'Title',
-        'Date',
-        'Total Images',
-        'ImgBox',
-        'Other',
-        'Density'
-    ));
+fputcsv($output,[
+'Post ID',
+'Title',
+'Date',
+'Total Images',
+'ImgBox',
+'Other',
+'Estimated Weight MB',
+'Density',
+'Performance Risk'
+]);
 
-    foreach($query->posts as $post){
+foreach($query->posts as $post_id){
 
-        preg_match_all('/<img[^>]+src="([^"]+)"/i', $post->post_content, $matches);
+$post = get_post($post_id);
 
-        $total = count($matches[1]);
+preg_match_all('/<img[^>]+src="([^"]+)"/i',$post->post_content,$matches);
 
-        $imgbox = 0;
-        $other = 0;
+$total = count($matches[1]);
 
-        foreach($matches[1] as $url){
+$imgbox = 0;
+$other = 0;
 
-            if(strpos($url,'imgbox') !== false){
-                $imgbox++;
-            } else {
-                $other++;
-            }
+foreach($matches[1] as $url){
 
-        }
+if(strpos($url,'imgbox') !== false){
+$imgbox++;
+}else{
+$other++;
+}
 
-        $density = ida_density_level($total);
+}
 
-        fputcsv($output, array(
-            $post->ID,
-            $post->post_title,
-            $post->post_date,
-            $total,
-            $imgbox,
-            $other,
-            $density
-        ));
+$weight = ida_estimate_weight($total);
 
-    }
+$density = ida_density_level($total);
 
-    fclose($output);
-    exit;
+$risk = ida_performance_risk($weight);
+
+fputcsv($output,[
+$post->ID,
+$post->post_title,
+$post->post_date,
+$total,
+$imgbox,
+$other,
+$weight,
+$density,
+$risk
+]);
+
+}
+
+fclose($output);
+exit;
 
 }
