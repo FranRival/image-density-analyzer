@@ -1,13 +1,39 @@
 <?php
 
-function ida_estimate_weight($total_images){
+function ida_get_image_size($url){
 
-$avg_image_kb = 180;
+    $response = wp_remote_head($url, [
+        'timeout' => 10
+    ]);
 
-$total_kb = $total_images * $avg_image_kb;
+    if(is_wp_error($response)){
+        return 0;
+    }
 
-$total_mb = $total_kb / 1024;
+    $headers = wp_remote_retrieve_headers($response);
 
-return round($total_mb,2);
+    if(isset($headers['content-length'])){
+        return intval($headers['content-length']);
+    }
+
+    return 0;
+
+}
+
+function ida_calculate_real_weight($images){
+
+    $total_bytes = 0;
+
+    foreach($images as $url){
+
+        $size = ida_get_image_size($url);
+
+        $total_bytes += $size;
+
+    }
+
+    $total_mb = $total_bytes / (1024 * 1024);
+
+    return round($total_mb,2);
 
 }

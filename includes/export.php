@@ -49,7 +49,7 @@ $other++;
 
 }
 
-$weight = ida_estimate_weight($total);
+$weight = ida_calculate_real_weight($matches[1]);
 
 $density = ida_density_level($total);
 

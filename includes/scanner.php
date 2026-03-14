@@ -52,7 +52,7 @@ $other++;
 
 $density = ida_density_level($total);
 
-$weight = ida_estimate_weight($total);
+$weight = ida_calculate_real_weight($matches[1]);
 
 $risk = ida_performance_risk($weight);
 
