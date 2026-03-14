@@ -104,3 +104,25 @@ Estructura:
 | size_bytes | bigint   |
 | checked_at | datetime |
 
+- El scaneo bloquea al admin. El post tiene 80 imagenes demoraria unos 30 segundos. Pero si analizamos 1000 post, entonces sera un problema.
+
+#### V2.4
+
+- Se tiene que usar AJAX batch scanning, que va a scanear bloques de 20, 30 o 50 post. 
+
+- si son 40k post, entonces:
+
+AJAX request 1 → posts 1–50  
+AJAX request 2 → posts 51–100  
+AJAX request 3 → posts 101–150  
+
+**Evitamos el timeout PHP ** congelar wp-admin ** memory overload
+
+Flujo completo del sistema
+
+1️⃣ Usuario hace clic en Scan Posts  
+2️⃣ JS inicia proceso AJAX  
+3️⃣ Se escanean 50 posts por request  
+4️⃣ Se actualiza la barra de progreso  
+5️⃣ Continúa hasta terminar  
+
