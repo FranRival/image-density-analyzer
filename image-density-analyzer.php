@@ -63,6 +63,31 @@ if(isset($_POST['export_csv'])){
 
 </div>
 
+register_activation_hook(__FILE__, 'ida_create_cache_table');
+
+function ida_create_cache_table(){
+
+global $wpdb;
+
+$table = $wpdb->prefix . 'ida_image_cache';
+
+$charset = $wpdb->get_charset_collate();
+
+$sql = "CREATE TABLE $table (
+
+id BIGINT AUTO_INCREMENT PRIMARY KEY,
+image_url TEXT,
+size_bytes BIGINT,
+checked_at DATETIME
+
+) $charset;";
+
+require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+
+dbDelta($sql);
+
+}
+
 <?php
 
 }

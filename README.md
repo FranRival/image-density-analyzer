@@ -78,6 +78,29 @@ HTTP:
 
 **el cambio se realizara en el weight-estimator.php
 
-
+#### V2.3
 
 ***necesitamos saber cuantos request se le haran al servidor
+
+- Problema: si el post tiene 50 a 200 imagenes, se haran todas juntas. 
+- si son 500 post (en realidad son como 40k), entonces se haran 250k peticiones
+
+** se tiene que arreglar usando caching  
+** limitar scans  
+** escanear por lotes  
+
+Esta web, al ser una biblioteca de imagenes, contiene fechas. Desde 2021. 
+
+#### PREVISIONES
+
+- si una imagen ya fue medida, no hay que volverla a medir. Guardarla en un Wordpress transient o una tabla custom. SE USARA UNA TABLA PROPIA EN SQL
+
+Estructura: 
+
+|    campo   |   tipo   |
+|:----------:|:--------:|
+| id         | bigint   |
+| image_url  | text     | 
+| size_bytes | bigint   |
+| checked_at | datetime |
+
