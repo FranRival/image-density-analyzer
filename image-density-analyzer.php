@@ -31,6 +31,8 @@ function ida_add_menu(){
 }
 
 
+
+
 function ida_admin_page(){
 ?>
 
@@ -38,11 +40,60 @@ function ida_admin_page(){
 
 <h1>Image Density Analyzer</h1>
 
-<button id="ida-start-scan" class="button button-primary">
-Start Scan
-</button>
+<?php
 
-<div id="ida-progress" style="margin-top:15px;"></div>
+global $wpdb;
+
+$results = $wpdb->get_results("
+SELECT 
+YEAR(post_date) as year,
+MONTH(post_date) as month,
+COUNT(ID) as total
+FROM {$wpdb->posts}
+WHERE post_type='post'
+AND post_status='publish'
+GROUP BY year, month
+ORDER BY year DESC, month DESC
+");
+
+echo "<h2>Scan by Month</h2>";
+
+echo "<table class='widefat striped' style='max-width:600px'>";
+echo "<thead>
+<tr>
+<th>Year</th>
+<th>Month</th>
+<th>Posts</th>
+<th>Action</th>
+</tr>
+</thead>";
+
+foreach($results as $row){
+
+$y = $row->year;
+$m = str_pad($row->month,2,'0',STR_PAD_LEFT);
+$total = $row->total;
+
+echo "<tr>
+<td>{$y}</td>
+<td>{$m}</td>
+<td>{$total}</td>
+<td>
+<button class='button button-primary ida-start-month-scan'
+data-year='{$y}'
+data-month='{$row->month}'>
+Scan
+</button>
+</td>
+</tr>";
+
+}
+
+echo "</table>";
+
+?>
+
+<div id="ida-progress" style="margin-top:20px;"></div>
 
 <table class="widefat striped" style="margin-top:20px;">
 
@@ -67,6 +118,10 @@ Start Scan
 
 <?php
 }
+
+
+
+
 
 
 
