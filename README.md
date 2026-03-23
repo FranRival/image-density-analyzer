@@ -1,3 +1,9 @@
+#### de momento, tenemos que limitar el scan. 
+Solo de momento.  
+Siguiente: analizar a profundidad cada peso de cada post.  
+
+
+
 1. Escanea todos los posts de WordPress
 Recorre cada post publicado para analizar su contenido.
 

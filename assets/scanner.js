@@ -1,46 +1,60 @@
 jQuery(document).ready(function($){
 
 let last_id = 0
-let batch = 50
+let batch = 5
 let year = null
 let month = null
 
 function scanBatch(){
 
-    console.log("CANNER IS LOADED.... - ");
-    
+    console.log("SCAN BATCH START");
 
-$.post(ida_ajax.ajax_url,{
+    $.post(ida_ajax.ajax_url, {
 
-action:'ida_scan_batch',
-last_id:last_id,
-batch:batch,
-year:year,
-month:month
+        action: 'ida_scan_batch',
+        last_id: last_id,
+        batch: batch,
+        year: year,
+        month: month
 
-},function(response){
+    })
 
-    console.log('AJAX RESPONSE:', response)
+    .done(function(response){
 
-if(!response.success){
-return
-}
+        console.log('AJAX RESPONSE:', response);
 
-$('#ida-results').append(response.data.html)
+        if(!response || !response.success){
+            console.log('Respuesta inválida o error en PHP');
+            return;
+        }
 
-last_id = response.data.last_id
+        // Si no hay HTML, lo mostramos también
+        if(response.data.html){
+            $('#ida-results').append(response.data.html);
+        }
 
-$('#ida-progress').text(
-'Last processed ID: ' + last_id
-)
+        last_id = response.data.last_id || last_id;
 
-if(response.data.done === false){
-scanBatch()
-}else{
-$('#ida-progress').append('<br>Scan completed')
-}
+        $('#ida-progress').text(
+            'Last processed ID: ' + last_id
+        );
 
-})
+        if(response.data.done === false){
+            scanBatch(); // siguiente batch
+        }else{
+            $('#ida-progress').append('<br>Scan completed');
+        }
+
+    })
+
+    .fail(function(xhr){
+
+        console.log('AJAX ERROR:', xhr);
+        console.log('RESPONSE TEXT:', xhr.responseText);
+
+        $('#ida-progress').append('<br>Error en AJAX');
+
+    });
 
 }
 

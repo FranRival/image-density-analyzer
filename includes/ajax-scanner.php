@@ -54,7 +54,21 @@ preg_match_all('/<img[^>]+src="([^"]+)"/i',$post->post_content,$matches);
 
 $images = isset($matches[1]) ? $matches[1] : [];
 
+// LIMITADOR TEMPORAL
+$limited_images = array_slice($images, 0, 5);
+
 $total = count($images);
+
+
+$weight = round($total * 0.15, 2);
+
+if(!empty($limited_images)){
+    try{
+        //$weight = ida_calculate_real_weight($limited_images);
+    } catch(Throwable $e){
+        error_log($e->getMessage());
+    }
+}
 
 $imgbox = 0;
 $other = 0;
@@ -69,15 +83,6 @@ $other++;
 
 }
 
-$weight = 0;
-
-if(!empty($images)){
-    try{
-        //$weight = ida_calculate_real_weight($images);
-    } catch(Throwable $e){
-        error_log($e->getMessage());
-    }
-}
 
 $density = ida_density_level($total);
 $risk = ida_performance_risk($weight);
