@@ -5,6 +5,152 @@ let batch = 5
 let year = null
 let month = null
 
+
+
+function processWeights(){
+
+    let rows = $('#ida-results tr');
+    let index = 0;
+
+    if(rows.length === 0){
+        alert('No posts to analyze');
+        return;
+    }
+
+    $('#ida-progress').html('Starting weight analysis...');
+
+    function processNext(){
+
+        if(index >= rows.length){
+            $('#ida-progress').append('<br>Weight analysis completed');
+            return;
+        }
+
+        let row = $(rows[index]);
+        let postId = row.find('td:first').text().trim();
+
+        $('#ida-progress').html(
+            'Processing post ' + (index + 1) + ' of ' + rows.length + 
+            ' (ID: ' + postId + ')'
+        );
+
+        $.post(ida_ajax.ajax_url, {
+            action: 'ida_calculate_weight',
+            post_id: postId
+        })
+        .done(function(res){
+
+            if(res.success){
+                // 🔥 actualizar columna de peso
+                row.find('.ida-weight-status').text(res.data.weight + ' MB');
+            }else{
+                row.find('.ida-weight-status').text('Error');
+            }
+
+            index++;
+
+            // 🔥 control de velocidad (MUY IMPORTANTE)
+            setTimeout(processNext, 300);
+
+        })
+        .fail(function(){
+            row.find('.ida-weight-status').text('Fail');
+            index++;
+            setTimeout(processNext, 300);
+        });
+
+    }
+
+    processNext();
+}
+
+
+
+$(document).on('click','#ida-start-weight',function(){
+    processWeights();
+});
+
+
+
+function processWeights(){
+
+    let rows = $('#ida-results tr');
+    let index = 0;
+
+    function processPost(row, postId){
+
+        let offset = 0;
+        let totalWeight = 0;
+
+        function processBatch(){
+
+            $.post(ida_ajax.ajax_url, {
+                action: 'ida_calculate_weight',
+                post_id: postId,
+                offset: offset
+            })
+            .done(function(res){
+
+                if(res.success){
+
+                    totalWeight += parseFloat(res.data.weight);
+                    offset = res.data.next_offset;
+
+                    row.find('.ida-weight-status').text(
+                        totalWeight.toFixed(2) + ' MB'
+                    );
+
+                    if(!res.data.done){
+                        setTimeout(processBatch, 200);
+                    } else {
+                        // 🔥 terminado este post
+                        index++;
+                        processNext();
+                    }
+
+                } else {
+                    row.find('.ida-weight-status').text('Error');
+                    index++;
+                    processNext();
+                }
+
+            })
+            .fail(function(){
+                row.find('.ida-weight-status').text('Fail');
+                index++;
+                processNext();
+            });
+
+        }
+
+        processBatch();
+    }
+
+    function processNext(){
+
+        if(index >= rows.length){
+            $('#ida-progress').html('Weight analysis completed');
+            return;
+        }
+
+        let row = $(rows[index]);
+        let postId = row.find('td:first').text().trim();
+
+        $('#ida-progress').html(
+            'Processing post ' + (index + 1) + ' of ' + rows.length
+        );
+
+        processPost(row, postId);
+    }
+
+    processNext();
+}
+
+
+
+
+
+
 function scanBatch(){
 
     console.log("SCAN BATCH START");
@@ -52,9 +198,12 @@ function scanBatch(){
         );
 
         if(response.data.done === false){
-            scanBatch(); // siguiente batch
+            scanBatch()
         }else{
             $('#ida-progress').append('<br>Scan completed');
+
+            // 🔥 iniciar cálculo de peso
+            processWeights();
         }
 
     })

@@ -2,6 +2,17 @@
 Solo de momento.  
 Siguiente: analizar a profundidad cada peso de cada post.  
 
+FUNCIONANDO:  
+- total de imagenes
+- img vs otro contenido
+- densidad
+
+#### FASE 2
+- peso real por imagen
+- progresivo
+- cacheando 
+
+----
 
 
 1. Escanea todos los posts de WordPress

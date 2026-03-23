@@ -94,6 +94,7 @@ $html .= "<tr>
 <td>{$imgbox}</td>
 <td>{$other}</td>
 <td>{$weight} MB</td>
+<td class='ida-weight-status' data-post='{$post->ID}'>Pending</td>
 <td>{$density}</td>
 <td>{$risk}</td>
 </tr>";

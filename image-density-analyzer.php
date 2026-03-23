@@ -2,7 +2,7 @@
 /*
 Plugin Name: Image Density Analyzer
 Description: Detecta posts con exceso de imágenes y estima su peso total.
-Version: 3.8
+Version: 4.3
 Author: Emmanuel
 */
 
@@ -48,6 +48,14 @@ add_action('admin_enqueue_scripts', function($hook){
         true
     );
 
+    // CSS
+    wp_enqueue_style(
+        'ida-styles',
+        plugins_url('assets/styles.css', __FILE__),
+        [],
+        time()
+    );
+
     wp_localize_script('ida-scanner','ida_ajax',[
         'ajax_url'=>admin_url('admin-ajax.php')
     ]);
@@ -87,7 +95,10 @@ ORDER BY year DESC, month DESC
 
 echo "<h2>Scan by Month</h2>";
 
-echo "<table class='widefat striped' style='max-width:600px'>";
+echo "<div class='ida-table-wrapper-small'>";
+
+echo "<table class='widefat striped ida-table-small' style='max-width:600px'>";
+
 echo "<thead>
 <tr>
 <th>Year</th>
@@ -97,7 +108,8 @@ echo "<thead>
 </tr>
 </thead>";
 
-foreach($results as $row){
+echo "<tbody>";
+
 
 if(!empty($results)){
     foreach($results as $row){
@@ -121,33 +133,37 @@ if(!empty($results)){
     }
 }
 
-}
 
+echo "</tbody>";
 echo "</table>";
+echo "</div>";
 
 ?>
 
 <div id="ida-progress" style="margin-top:20px;"></div>
+<button id="ida-start-weight" class="button button-secondary" style="margin-top:10px;">
+    Analyze Real Weight
+</button>
 
-<table class="widefat striped" style="margin-top:20px;">
+<div class="ida-table-wrapper">
+    <table class="widefat striped ida-table">
 
-<thead>
-<tr>
-<th>ID</th>
-<th>Title</th>
-<th>Total</th>
-<th>ImgBox</th>
-<th>Other</th>
-<th>Weight</th>
-<th>Density</th>
-<th>Risk</th>
-</tr>
-</thead>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Total</th>
+            <th>ImgBox</th>
+            <th>Other</th>
+            <th>Weight</th>
+            <th>Density</th>
+            <th>Risk</th>
+        </tr>
+        </thead>
 
-<tbody id="ida-results"></tbody>
+        <tbody id="ida-results"></tbody>
 
-</table>
-
+    </table>
 </div>
 
 <?php
@@ -181,3 +197,50 @@ function ida_create_cache_table(){
 
 }
 
+
+
+
+add_action('wp_ajax_ida_calculate_weight','ida_calculate_weight');
+
+function ida_calculate_weight(){
+
+$post_id = intval($_POST['post_id']);
+$offset = intval($_POST['offset']);
+
+$post = get_post($post_id);
+
+if(!$post){
+    wp_send_json_error();
+}
+
+preg_match_all('/<img[^>]+src="([^"]+)"/i',$post->post_content,$matches);
+
+$images = isset($matches[1]) ? $matches[1] : [];
+
+$batch_size = 3;
+
+// 🔥 tomar bloque progresivo
+$batch = array_slice($images, $offset, $batch_size);
+
+$total_bytes = 0;
+
+foreach($batch as $url){
+
+    $size = ida_get_image_size($url);
+    $total_bytes += $size;
+
+}
+
+$weight = round($total_bytes / (1024 * 1024), 2);
+
+$next_offset = $offset + $batch_size;
+$done = $next_offset >= count($images);
+
+wp_send_json_success([
+    'weight' => $weight,
+    'next_offset' => $next_offset,
+    'done' => $done,
+    'total_images' => count($images)
+]);
+
+}
