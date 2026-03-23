@@ -2,7 +2,7 @@
 /*
 Plugin Name: Image Density Analyzer
 Description: Detecta posts con exceso de imágenes y estima su peso total.
-Version: 2.0
+Version: 3.8
 Author: Emmanuel
 */
 
@@ -20,7 +20,7 @@ add_action('admin_menu','ida_add_menu');
 
 function ida_add_menu(){
 
-    add_management_page(
+    $hook = add_management_page(
         'Image Density Analyzer',
         'Image Density Analyzer',
         'manage_options',
@@ -29,6 +29,33 @@ function ida_add_menu(){
     );
 
 }
+
+
+
+
+add_action('admin_enqueue_scripts', function(){
+
+$screen = get_current_screen();
+
+if (!$screen || $screen->id !== 'tools_page_image-density-analyzer') {
+    return;
+}
+
+wp_enqueue_script(
+'ida-scanner',
+plugins_url('assets/scanner.js', __FILE__),
+['jquery'],
+time(),
+true
+);
+
+wp_localize_script('ida-scanner','ida_ajax',[
+'ajax_url'=>admin_url('admin-ajax.php')
+]);
+
+});
+
+
 
 
 
@@ -153,24 +180,3 @@ dbDelta($sql);
 
 
 
-add_action('admin_enqueue_scripts','ida_load_scripts');
-
-function ida_load_scripts($hook){
-
-if($hook !== 'tools_page_image-density-analyzer'){
-return;
-}
-
-wp_enqueue_script(
-'ida-scanner',
-plugin_dir_url(__FILE__) . 'assets/scanner.js',
-['jquery'],
-'1.0',
-true
-);
-
-wp_localize_script('ida-scanner','ida_ajax',[
-'ajax_url'=>admin_url('admin-ajax.php')
-]);
-
-}

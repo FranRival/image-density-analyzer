@@ -7,7 +7,7 @@ let month = null
 
 function scanBatch(){
 
-    console.log("Comienza la funcion");
+    console.log("CANNER IS LOADED.... - ");
     
 
 $.post(ida_ajax.ajax_url,{
