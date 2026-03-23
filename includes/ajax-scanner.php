@@ -8,6 +8,9 @@ add_action('wp_ajax_ida_scan_batch','ida_scan_batch');
 
 function ida_scan_batch(){
 
+error_log('---- IDA START ----');
+error_log(print_r($_POST, true));
+
 $last_id = intval($_POST['last_id']);
 $batch = intval($_POST['batch']);
 $year = intval($_POST['year']);
@@ -37,18 +40,26 @@ $post_ids = $wpdb->get_col($sql);
 $html = '';
 $new_last_id = $last_id;
 
+
+
 foreach($post_ids as $post_id){
 
 $post = get_post($post_id);
 
+if(!$post){
+    continue;
+}
+
 preg_match_all('/<img[^>]+src="([^"]+)"/i',$post->post_content,$matches);
 
-$total = count($matches[1]);
+$images = isset($matches[1]) ? $matches[1] : [];
+
+$total = count($images);
 
 $imgbox = 0;
 $other = 0;
 
-foreach($matches[1] as $url){
+foreach($images as $url){
 
 if(strpos($url,'imgbox') !== false){
 $imgbox++;
@@ -58,7 +69,16 @@ $other++;
 
 }
 
-$weight = ida_calculate_real_weight($matches[1]);
+$weight = 0;
+
+if(!empty($images)){
+    try{
+        //$weight = ida_calculate_real_weight($images);
+    } catch(Throwable $e){
+        error_log($e->getMessage());
+    }
+}
+
 $density = ida_density_level($total);
 $risk = ida_performance_risk($weight);
 
@@ -76,6 +96,10 @@ $html .= "<tr>
 $new_last_id = $post_id;
 
 }
+
+
+
+
 
 $done = count($post_ids) < $batch;
 

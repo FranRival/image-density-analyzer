@@ -46,8 +46,10 @@ $('#ida-progress').append('<br>Scan completed')
 
 $(document).on('click','.ida-start-month-scan',function(){
 
-year = $(this).data('year')
-month = $(this).data('month')
+year = $(this).attr('data-year')
+month = $(this).attr('data-month')
+
+console.log('YEAR:', year, 'MONTH:', month)
 
 last_id = 0
 $('#ida-results').html('')
