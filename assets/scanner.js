@@ -19,9 +19,13 @@ function scanBatch(){
 
     })
 
+    //a este punto el PHP funciona
+    //AJAX funciona
+    //Datos funcionan y llegan bien
+    // document.querySelectorAll('#ida-results tr').length -entrega 26 -esta es la tabla: 2024 / 12 / 26 - Scan.
     .done(function(response){
 
-        console.log('AJAX RESPONSE:', response);
+        console.log('AJAX RESPONSE FULL:', JSON.stringify(response, null, 2));
 
         if(!response || !response.success){
             console.log('Respuesta inválida o error en PHP');
