@@ -35,12 +35,20 @@ function scanBatch(){
         // Si no hay HTML, lo mostramos también
         if(response.data.html){
             $('#ida-results').append(response.data.html);
+
+        // SCROLL automático
+        $('#ida-results tr:last')[0].scrollIntoView({
+            behavior: "smooth",
+            block: "end"
+        });
         }
 
         last_id = response.data.last_id || last_id;
 
-        $('#ida-progress').text(
-            'Last processed ID: ' + last_id
+        let total = $('#ida-results tr').length;
+
+        $('#ida-progress').html(
+        'Processed: ' + total + ' posts | Last ID: ' + last_id
         );
 
         if(response.data.done === false){
