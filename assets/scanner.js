@@ -7,6 +7,9 @@ let month = null
 
 function scanBatch(){
 
+    console.log("Comienza la funcion");
+    
+
 $.post(ida_ajax.ajax_url,{
 
 action:'ida_scan_batch',
@@ -16,6 +19,8 @@ year:year,
 month:month
 
 },function(response){
+
+    console.log('AJAX RESPONSE:', response)
 
 if(!response.success){
 return
