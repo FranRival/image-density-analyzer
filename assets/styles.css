@@ -112,3 +112,16 @@
     content: " ▼";
     font-size: 10px;
 }
+
+/* CRITICAL */
+.ida-density-CRITICAL {
+    background-color: #f5b7b1;
+    font-weight: bold;
+}
+
+/* SUPER CRITICAL */
+.ida-density-SUPER-CRITICAL {
+    background-color: #e74c3c;
+    color: #fff;
+    font-weight: bold;
+}

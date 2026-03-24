@@ -50,7 +50,7 @@ function ida_scan_batch(){
         $images = isset($matches[1]) ? $matches[1] : [];
         $total  = count($images);
 
-        // Peso estimado (rápido)
+        // 🔥 Peso estimado (rápido)
         $weight = round($total * 0.15, 2);
 
         // Conteo imgbox vs other
@@ -69,21 +69,23 @@ function ida_scan_batch(){
         $density = ida_density_level($total);
         $risk    = ida_performance_risk($weight);
 
-        // 🔥 FIX CLASE CSS (espacios → guiones)
+        // 🔥 FIX clase CSS (SUPER CRITICAL → SUPER-CRITICAL)
         $density_class = str_replace(' ', '-', $density);
 
-        // 🔥 HTML CORRECTO
-        $html .= "<tr class='ida-row-{$density_class}'>
-            <td>{$post->ID}</td>
-            <td>{$post->post_title}</td>
-            <td>{$total}</td>
-            <td>{$imgbox}</td>
-            <td>{$other}</td>
-            <td>{$weight} MB</td>
-            <td class='ida-weight-status' data-post='{$post->ID}'>Pending</td>
-            <td>{$density}</td>
-            <td>{$risk}</td>
-        </tr>";
+        // 🔥 HTML SEGURO (sin strings rotos)
+        $row  = "<tr>";
+        $row .= "<td>{$post->ID}</td>";
+        $row .= "<td>{$post->post_title}</td>";
+        $row .= "<td>{$total}</td>";
+        $row .= "<td>{$imgbox}</td>";
+        $row .= "<td>{$other}</td>";
+        $row .= "<td>{$weight} MB</td>";
+        $row .= "<td class='ida-weight-status' data-post='{$post->ID}'>Pending</td>";
+        $row .= "<td class='ida-density ida-density-{$density_class}'>{$density}</td>";
+        $row .= "<td>{$risk}</td>";
+        $row .= "</tr>";
+
+        $html .= $row;
 
         $new_last_id = $post_id;
     }

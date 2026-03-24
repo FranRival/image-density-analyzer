@@ -2,7 +2,7 @@
 /*
 Plugin Name: Image Density Analyzer
 Description: Detecta posts con exceso de imágenes y estima su peso total.
-Version: 4.3
+Version: 4.6
 Author: Emmanuel
 */
 
@@ -241,8 +241,7 @@ foreach($batch as $url){
 
 $weight = round($total_bytes / (1024 * 1024), 2);
 
-$next_offset = $offset + $batch_size;
-$done = $next_offset >= count($images);
+$next_offset = $offset + $batch_size; $done = $next_offset >= count($images);
 
 wp_send_json_success([
     'weight' => $weight,
