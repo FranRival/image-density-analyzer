@@ -145,7 +145,8 @@ function scanBatch(){
         }else{
             $('#ida-progress').append('<br>Scan completed');
 
-            // 🔥 iniciar cálculo de peso
+            // activar boton
+            $('#ida-start-weight').prop('disabled', false);
 
         }
 
@@ -172,6 +173,7 @@ let formattedMonth = month.toString().padStart(2, '0');
 $('#ida-current-month').text('(' + year + '-' + formattedMonth + ')');
 
 console.log('YEAR:', year, 'MONTH:', month)
+$('#ida-start-weight').prop('disabled', true);
 
 last_id = 0
 $('#ida-results').html('')

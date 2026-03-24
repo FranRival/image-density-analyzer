@@ -141,7 +141,7 @@ echo "</table>";
 ?>
 
 <div id="ida-progress" style="margin-top:20px;"></div>
-<button id="ida-start-weight" class="button button-secondary">
+<button id="ida-start-weight" class="button button-secondary" desabled>
     Analyze Real Weight <span id="ida-current-month"></span>
 </button>
 
