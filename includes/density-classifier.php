@@ -1,21 +1,25 @@
 <?php
 
+
 function ida_density_level($total){
 
-if($total <= 20){
-return 'NORMAL';
-}
+    if($total <= 20){
+        return 'NORMAL';
+    }
 
-if($total <= 40){
-return 'MEDIUM';
-}
+    if($total <= 40){
+        return 'MEDIUM';
+    }
 
-if($total <= 80){
-return 'HIGH';
-}
+    if($total <= 80){
+        return 'HIGH';
+    }
 
-return 'CRITICAL';
+    if($total <= 150){
+        return 'CRITICAL';
+    }
 
+    return 'SUPER CRITICAL';
 }
 
 

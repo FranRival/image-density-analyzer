@@ -8,111 +8,91 @@ add_action('wp_ajax_ida_scan_batch','ida_scan_batch');
 
 function ida_scan_batch(){
 
-error_log('---- IDA START ----');
-error_log(print_r($_POST, true));
+    $last_id = intval($_POST['last_id']);
+    $batch   = intval($_POST['batch']);
+    $year    = intval($_POST['year']);
+    $month   = intval($_POST['month']);
 
-$last_id = intval($_POST['last_id']);
-$batch = intval($_POST['batch']);
-$year = intval($_POST['year']);
-$month = intval($_POST['month']);
+    global $wpdb;
 
-global $wpdb;
+    $table = $wpdb->posts;
 
-$table = $wpdb->posts;
+    $sql = $wpdb->prepare(
+        "SELECT ID FROM $table
+        WHERE post_type='post'
+        AND post_status='publish'
+        AND ID > %d
+        AND YEAR(post_date) = %d
+        AND MONTH(post_date) = %d
+        ORDER BY ID ASC
+        LIMIT %d",
+        $last_id,
+        $year,
+        $month,
+        $batch
+    );
 
-$sql = $wpdb->prepare(
-"SELECT ID FROM $table
-WHERE post_type='post'
-AND post_status='publish'
-AND ID > %d
-AND YEAR(post_date) = %d
-AND MONTH(post_date) = %d
-ORDER BY ID ASC
-LIMIT %d",
-$last_id,
-$year,
-$month,
-$batch
-);
+    $post_ids = $wpdb->get_col($sql);
 
-$post_ids = $wpdb->get_col($sql);
+    $html = '';
+    $new_last_id = $last_id;
 
-$html = '';
-$new_last_id = $last_id;
+    foreach($post_ids as $post_id){
 
+        $post = get_post($post_id);
 
+        if(!$post){
+            continue;
+        }
 
-foreach($post_ids as $post_id){
+        preg_match_all('/<img[^>]+src="([^"]+)"/i',$post->post_content,$matches);
 
-$post = get_post($post_id);
+        $images = isset($matches[1]) ? $matches[1] : [];
+        $total  = count($images);
 
-if(!$post){
-    continue;
-}
+        // Peso estimado (rápido)
+        $weight = round($total * 0.15, 2);
 
-preg_match_all('/<img[^>]+src="([^"]+)"/i',$post->post_content,$matches);
+        // Conteo imgbox vs other
+        $imgbox = 0;
+        $other  = 0;
 
-$images = isset($matches[1]) ? $matches[1] : [];
+        foreach($images as $url){
+            if(strpos($url,'imgbox') !== false){
+                $imgbox++;
+            } else {
+                $other++;
+            }
+        }
 
-// LIMITADOR TEMPORAL
-$limited_images = array_slice($images, 0, 5);
+        // Clasificaciones
+        $density = ida_density_level($total);
+        $risk    = ida_performance_risk($weight);
 
-$total = count($images);
+        // 🔥 FIX CLASE CSS (espacios → guiones)
+        $density_class = str_replace(' ', '-', $density);
 
+        // 🔥 HTML CORRECTO
+        $html .= "<tr class='ida-row-{$density_class}'>
+            <td>{$post->ID}</td>
+            <td>{$post->post_title}</td>
+            <td>{$total}</td>
+            <td>{$imgbox}</td>
+            <td>{$other}</td>
+            <td>{$weight} MB</td>
+            <td class='ida-weight-status' data-post='{$post->ID}'>Pending</td>
+            <td>{$density}</td>
+            <td>{$risk}</td>
+        </tr>";
 
-$weight = round($total * 0.15, 2);
-
-if(!empty($limited_images)){
-    try{
-        //$weight = ida_calculate_real_weight($limited_images);
-    } catch(Throwable $e){
-        error_log($e->getMessage());
+        $new_last_id = $post_id;
     }
-}
 
-$imgbox = 0;
-$other = 0;
+    $done = count($post_ids) < $batch;
 
-foreach($images as $url){
-
-if(strpos($url,'imgbox') !== false){
-$imgbox++;
-}else{
-$other++;
-}
-
-}
-
-
-$density = ida_density_level($total);
-$risk = ida_performance_risk($weight);
-
-$html .= "<tr>
-<td>{$post->ID}</td>
-<td>{$post->post_title}</td>
-<td>{$total}</td>
-<td>{$imgbox}</td>
-<td>{$other}</td>
-<td>{$weight} MB</td>
-<td class='ida-weight-status' data-post='{$post->ID}'>Pending</td>
-<td>{$density}</td>
-<td>{$risk}</td>
-</tr>";
-
-$new_last_id = $post_id;
-
-}
-
-
-
-
-
-$done = count($post_ids) < $batch;
-
-wp_send_json_success([
-'html'=>$html,
-'done'=>$done,
-'last_id'=>$new_last_id
-]);
-
+    wp_send_json_success([
+        'html'     => $html,
+        'done'     => $done,
+        'last_id'  => $new_last_id
+    ]);
 }

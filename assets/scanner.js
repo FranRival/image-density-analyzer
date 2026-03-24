@@ -167,6 +167,10 @@ $(document).on('click','.ida-start-month-scan',function(){
 year = $(this).attr('data-year')
 month = $(this).attr('data-month')
 
+let formattedMonth = month.toString().padStart(2, '0');
+
+$('#ida-current-month').text('(' + year + '-' + formattedMonth + ')');
+
 console.log('YEAR:', year, 'MONTH:', month)
 
 last_id = 0
@@ -181,3 +185,48 @@ scanBatch()
 })
 
 });
+
+
+$(document).on('click','.ida-table th',function(){
+
+    let table = $(this).closest('table');
+    let tbody = table.find('tbody');
+    let rows = tbody.find('tr').toArray();
+
+    let index = $(this).index();
+    let type = $(this).data('sort');
+
+    let asc = $(this).hasClass('asc');
+
+    // reset clases
+    table.find('th').removeClass('asc desc');
+
+    $(this).addClass(asc ? 'desc' : 'asc');
+
+    rows.sort(function(a,b){
+
+        let A = $(a).children('td').eq(index).text().trim();
+        let B = $(b).children('td').eq(index).text().trim();
+
+        // limpiar MB
+        A = A.replace('MB','').trim();
+        B = B.replace('MB','').trim();
+
+        if(type === 'number'){
+            A = parseFloat(A) || 0;
+            B = parseFloat(B) || 0;
+        }
+
+        if(A < B) return asc ? 1 : -1;
+        if(A > B) return asc ? -1 : 1;
+        return 0;
+
+    });
+
+    $.each(rows,function(i,row){
+        tbody.append(row);
+    });
+
+});
+
+

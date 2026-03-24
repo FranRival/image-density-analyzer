@@ -95,9 +95,9 @@ ORDER BY year DESC, month DESC
 
 echo "<h2>Scan by Month</h2>";
 
-echo "<div class='ida-table-wrapper-small'>";
 
-echo "<table class='widefat striped ida-table-small' style='max-width:600px'>";
+
+echo "<table class='widefat striped' style='max-width:600px'>";
 
 echo "<thead>
 <tr>
@@ -136,13 +136,13 @@ if(!empty($results)){
 
 echo "</tbody>";
 echo "</table>";
-echo "</div>";
+
 
 ?>
 
 <div id="ida-progress" style="margin-top:20px;"></div>
-<button id="ida-start-weight" class="button button-secondary" style="margin-top:10px;">
-    Analyze Real Weight
+<button id="ida-start-weight" class="button button-secondary">
+    Analyze Real Weight <span id="ida-current-month"></span>
 </button>
 
 <div class="ida-table-wrapper">
@@ -150,20 +150,28 @@ echo "</div>";
 
         <thead>
         <tr>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Total</th>
-            <th>ImgBox</th>
-            <th>Other</th>
-            <th>Weight</th>
-            <th>Density</th>
-            <th>Risk</th>
+            <th data-sort="number">ID</th>
+            <th data-sort="text">Title</th>
+            <th data-sort="number">Total</th>
+            <th data-sort="number">ImgBox</th>
+            <th data-sort="number">Other</th>
+            <th data-sort="number">Weight</th>
+            <th data-sort="text">Density</th>
+            <th data-sort="text">Risk</th>
         </tr>
         </thead>
 
         <tbody id="ida-results"></tbody>
 
     </table>
+</div>
+
+<div class="ida-legend">
+    <span class="ida-box normal">NORMAL</span>
+    <span class="ida-box medium">MEDIUM</span>
+    <span class="ida-box high">HIGH</span>
+    <span class="ida-box critical">CRITICAL</span>
+    <span class="ida-box super">SUPER CRITICAL</span>
 </div>
 
 <?php

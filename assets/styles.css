@@ -47,3 +47,68 @@
 .ida-table-small thead th {
     box-shadow: 0 2px 2px rgba(0,0,0,0.05);
 }
+
+
+/* NORMAL */
+.ida-row-NORMAL {
+    background-color: #e9f7ef;
+}
+
+/* MEDIUM */
+.ida-row-MEDIUM {
+    background-color: #fcf3cf;
+}
+
+/* HIGH */
+.ida-row-HIGH {
+    background-color: #fdebd0;
+}
+
+/* CRITICAL */
+.ida-row-CRITICAL {
+    background-color: #f5b7b1;
+}
+
+/* SUPER CRITICAL */
+.ida-row-SUPER-CRITICAL {
+    background-color: #e74c3c;
+    color: #fff;
+}
+
+
+
+.ida-legend {
+    margin-top: 15px;
+}
+
+.ida-box {
+    display: inline-block;
+    padding: 5px 10px;
+    margin-right: 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* colores */
+.ida-box.normal { background: #e9f7ef; }
+.ida-box.medium { background: #fcf3cf; }
+.ida-box.high { background: #fdebd0; }
+.ida-box.critical { background: #f5b7b1; }
+.ida-box.super { background: #e74c3c; color: #fff; }
+
+
+
+.ida-table th {
+    cursor: pointer;
+}
+
+.ida-table th.asc::after {
+    content: " ▲";
+    font-size: 10px;
+}
+
+.ida-table th.desc::after {
+    content: " ▼";
+    font-size: 10px;
+}
