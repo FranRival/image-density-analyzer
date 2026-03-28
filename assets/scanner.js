@@ -299,3 +299,19 @@ $(document).on('click','#ida-copy-selected',function(){
     alert('Copied ' + rows.length + ' rows');
 
 });
+
+
+
+
+
+$(document).on('change','.ida-checkbox',function(){
+
+    let totalChecked = $('.ida-checkbox:checked').length;
+
+    if(totalChecked > 0){
+        $('#ida-copy-selected').show();
+    }else{
+        $('#ida-copy-selected').hide();
+    }
+
+});
