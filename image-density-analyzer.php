@@ -157,7 +157,7 @@ echo "</table>";
 
         <thead>
         <tr>
-            <th data-sort="number">Select</th>
+            
             <th data-sort="number">ID</th>
             <th data-sort="text">Title</th>
             <th data-sort="number">Total</th>
