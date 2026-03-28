@@ -77,7 +77,7 @@ function processWeights(){
         }
 
         let row = $(rows[index]);
-        let postId = row.find('td:first').text().trim();
+        let postId = row.find('td').eq(1).text().trim();
 
         $('#ida-progress').html(
             'Processing post ' + (index + 1) + ' of ' + rows.length
@@ -147,6 +147,9 @@ function scanBatch(){
 
             // activar boton
             $('#ida-start-weight').prop('disabled', false);
+
+            //activar boton al acabar el analisis 
+            $('#ida-edit-mode').prop('disabled', false);
 
         }
 
@@ -231,3 +234,21 @@ $(document).on('click','.ida-table th',function(){
 });
 
 
+
+let editMode = false;
+
+$('#ida-edit-mode').click(function(){
+
+    editMode = !editMode;
+
+    if(editMode){
+        $('.ida-select').show();
+        $('#ida-copy-selected').show();
+        $(this).text('Exit Edit Mode');
+    }else{
+        $('.ida-select').hide();
+        $('#ida-copy-selected').hide();
+        $(this).text('Edit Mode');
+    }
+
+});
