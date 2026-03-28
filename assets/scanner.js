@@ -257,3 +257,45 @@ $(document).on('click','#ida-edit-mode',function(){
     }
 
 });
+
+
+
+
+$(document).on('click','#ida-copy-selected',function(){
+
+    let rows = [];
+
+    $('.ida-checkbox:checked').each(function(){
+
+        let row = $(this).closest('tr');
+
+        let cols = row.find('td');
+
+        let data = [];
+
+        // ⚠️ saltamos checkbox (columna 0)
+        for(let i = 1; i < cols.length; i++){
+
+            let text = $(cols[i]).text().trim();
+
+            // limpiar "MB"
+            text = text.replace('MB','').trim();
+
+            data.push(text);
+        }
+
+        rows.push(data.join('\t')); // formato Excel
+    });
+
+    if(rows.length === 0){
+        alert('No rows selected');
+        return;
+    }
+
+    let finalText = rows.join('\n');
+
+    navigator.clipboard.writeText(finalText);
+
+    alert('Copied ' + rows.length + ' rows');
+
+});
