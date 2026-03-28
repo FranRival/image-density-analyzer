@@ -69,10 +69,16 @@ function processWeights(){
         processBatch();
     }
 
+
+    //Finalizacion del analisis, activacion del boton de modo de edicion.
     function processNext(){
 
         if(index >= rows.length){
             $('#ida-progress').html('Weight analysis completed');
+
+            //activar boton al acabar el analisis 
+            $('#ida-edit-mode').prop('disabled', false);
+
             return;
         }
 
@@ -148,8 +154,7 @@ function scanBatch(){
             // activar boton
             $('#ida-start-weight').prop('disabled', false);
 
-            //activar boton al acabar el analisis 
-            $('#ida-edit-mode').prop('disabled', false);
+            
 
         }
 
@@ -237,7 +242,7 @@ $(document).on('click','.ida-table th',function(){
 
 let editMode = false;
 
-$('#ida-edit-mode').click(function(){
+$(document).on('click','#ida-edit-mode',function(){
 
     editMode = !editMode;
 
