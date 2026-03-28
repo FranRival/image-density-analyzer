@@ -200,9 +200,8 @@ $(document).on('click','.ida-table th',function(){
 
     let asc = $(this).hasClass('asc');
 
-    // reset clases
+    // reset estados
     table.find('th').removeClass('asc desc');
-
     $(this).addClass(asc ? 'desc' : 'asc');
 
     rows.sort(function(a,b){

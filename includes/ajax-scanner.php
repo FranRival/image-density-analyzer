@@ -69,11 +69,15 @@ function ida_scan_batch(){
         $density = ida_density_level($total);
         $risk    = ida_performance_risk($weight);
 
-        // 🔥 FIX clase CSS (SUPER CRITICAL → SUPER-CRITICAL)
+        // FIX clase CSS (SUPER CRITICAL → SUPER-CRITICAL)
         $density_class = str_replace(' ', '-', $density);
 
-        // 🔥 HTML SEGURO (sin strings rotos)
+        // 
         $row  = "<tr>";
+        //Columna de select
+        $row .= "<td class='ida-select'>
+        <input type='checkbox' class='ida-checkbox'>
+        </td>";
         $row .= "<td>{$post->ID}</td>";
         $row .= "<td>{$post->post_title}</td>";
         $row .= "<td>{$total}</td>";

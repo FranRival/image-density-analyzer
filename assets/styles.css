@@ -105,12 +105,10 @@
 
 .ida-table th.asc::after {
     content: " ▲";
-    font-size: 10px;
 }
 
 .ida-table th.desc::after {
     content: " ▼";
-    font-size: 10px;
 }
 
 /* CRITICAL */

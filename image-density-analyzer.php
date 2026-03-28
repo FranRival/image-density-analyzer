@@ -2,7 +2,7 @@
 /*
 Plugin Name: Image Density Analyzer
 Description: Detecta posts con exceso de imágenes y estima su peso total.
-Version: 4.6
+Version: 4.7
 Author: Emmanuel
 */
 
@@ -144,12 +144,20 @@ echo "</table>";
 <button id="ida-start-weight" class="button button-secondary" desabled>
     Analyze Real Weight <span id="ida-current-month"></span>
 </button>
+<button id="ida-edit-mode" class="button" disabled>
+    Edit Mode
+</button>
+
+<button id="ida-copy-selected" class="button button-primary" style="display:none;">
+    Copy Selected
+</button>
 
 <div class="ida-table-wrapper">
     <table class="widefat striped ida-table">
 
         <thead>
         <tr>
+            <th data-sort="number">Select</th>
             <th data-sort="number">ID</th>
             <th data-sort="text">Title</th>
             <th data-sort="number">Total</th>
